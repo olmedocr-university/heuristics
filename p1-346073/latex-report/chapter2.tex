@@ -1,0 +1,476 @@
+\chapter{Problem Modelling}
+\label{chapter: problem modelling}
+
+
+
+
+
+
+
+
+%----------------------------------------- PART 1 --------------------------------------------------
+
+\section{Part 1: Entrance waiting time}
+
+\paragraph{}
+The museum wants to reduce the average waiting time in each of the entrances by acquiring a certain amount of resources.
+
+\begin{itemize}
+    \item The entrances are classified according to its cardinal orientation, therefore we obtain three classes: $north$, $east$ and $west$ (note: from this point onwards, to simplify the formulas, we denote them as $E_1$, $E_2$ and $E_3$.
+    
+    \item The resources available to the museum are $vending\ machines$, $turnstiles$ and $employees$. Once again, to simplify the formulae we write them as $RS_1$, $RS_2$ and $RS_3$.
+\end{itemize}
+
+
+
+
+
+
+
+
+\subsection{Decision variables definition}
+
+\paragraph{}
+The proposed model contains 9 decision variables which denote how many resources of each type ($RS$) should be placed into each entrance ($E$). The equation  \ref{eq: part 1 - objective function}  presents them in mathematical language.
+
+\begin{equation}\label{eq: part 2 - decision variables}
+    \forall i \in RS, j \in E; \vec{N} \in \mathbb{Z}:
+    \quad
+    N_{i,j} \rightleftharpoons \text{\# resource } i \text{ on entrance } j;
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $RS$ = set of available resources
+    \item[] $E$ = set of entrances
+\end{itemize}
+
+
+
+
+
+
+
+\subsection{Objective function definition}
+
+\paragraph{}
+The objective of this statement is to minimize the average waiting time in all entrances of the museum.
+
+\paragraph{}
+Since the approach we took to define our objective function was to maximize the time reduction in all entrances, in order to obtain the minimum waiting time we need to:
+substract the maximized value obtained in the objective function to the sum of the average waiting time in all of them, then we divide it by three to obtain the mean value of the total waiting time per entrance.\\
+The formula \ref{eq: part 1 - average waiting time in all entrances} explains this in a formal way.
+
+
+\paragraph{}
+The objective function proposed is:
+
+\begin{equation}\label{eq: part 1 - objective function}
+    \begin{aligned}
+        max\ z = \sum_{i \in E}\left({\sum_{j \in RS}\left({RE_j \vec{N}_{i,j}}\right)}\right)
+    \end{aligned}
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $RE$ = set defining the minutes reduced by each resource type $j$
+    \item[] $\vec{N}$ = vector containing the final number of resources per entrance $i$ and per type $j$
+\end{itemize}
+
+\paragraph{}
+The following formula obtains the optimal solution required by the museum:
+
+\begin{equation}\label{eq: part 1 - average waiting time in all entrances}
+    \begin{aligned}
+        \overline {average\ waiting\ time} = \frac{\sum_{i \in A}{\left(A_i\right) - z(\vec{N})}}{3}
+    \end{aligned}
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $A$ = set of the average waiting time in minutes per entrance, provided by the museum
+    \item[] $z$ = objective function defined in \ref{eq: part 1 - objective function}
+\end{itemize}
+
+
+\subsection{Constraints}
+
+\subsubsection{Cost}
+
+\paragraph{}
+The total cost of the resources placed in the three entrances must be lower or equal to 1000\EUR{}.
+
+\begin{equation}
+    \sum_{i \in E}\left({\sum_{j \in C}\left({C_j N_{j,i}}\right)}\right) \leq 1000
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $C$ = set of costs for each resource $j$ in an 8-hour day
+\end{itemize}
+
+
+
+
+
+
+\subsubsection{Cost ratio}
+
+\paragraph{}
+The main entrance (the eastern one) should not cost more than 10\% of any of the secondary ones.
+
+
+\begin{equation}
+    \sum_{j \in RS}\left({C_j N_{j,k}}\right) \leq 1.1 \times \sum_{j \in RS}\left({C_j N_{j,i}}\right) \quad \forall k \in E^m,\ i \in E^s
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $E^m$ = set containing the main entrance of the museum; $E^m \subseteq E$
+    \item[] $E^s$ = set of secondary entrances ($north$ and $west$); $E^s \subseteq E$
+\end{itemize}
+
+
+
+
+
+
+
+
+\subsubsection{Sum of resources}
+
+\paragraph{}
+The sum of $turnstiles$ and $vending\ machines$ in any secondary entrance shall be less than the sum of the mentioned resources in the main one. 
+The plus one is added to the left side of the inequality to force the constraint to be \textit{less than} instead of \textit{less or equal than}.
+
+\begin{equation}
+    \sum_{j \in RS^s} {\left (N_{j,i}\right)} + 1 \leq \sum_{j \in RS^s} {\left (N_{j,k}\right)} \quad \forall k \in E^m,\ i \in E^s
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $RS^s$ = set of secondary resources ($vending\ machines$ and $turnstiles$); $RS^s \subseteq RS$
+\end{itemize}
+
+
+
+
+
+
+
+
+\subsubsection{Turnstiles in secondary entrances}
+
+\paragraph{}
+The number of turnstiles present in the $north$ entrance must be lower than the ones placed on the $west$ side.
+Once again the plus one is added to force the $less\ than$ behaviour while using \textit{less or equal than}.
+
+\begin{equation}
+    N_{turnstile,north} + 1 \leq N_{turnstile,west}
+\end{equation}
+
+
+
+
+
+\subsubsection{Amount of resources in the main entrance}
+
+\paragraph{}
+In the main entrance, at least two resources of each type ($vending\ machines$, $turnstiles$ and $employees$) should be placed.
+
+\begin{equation}
+    N_{i,j} \geq 2 \quad \forall i \in RS,\ j \in E^m
+\end{equation}
+
+
+
+
+\subsubsection{Amount of resources in the secondary entrances}
+
+\paragraph{}
+Regarding the secondary accesses, at least one of each type of resource should be present.
+
+\begin{equation}
+    N_{i,j} \geq 1 \quad \forall i \in RS,\ j \in E^s
+\end{equation}
+
+
+
+
+\subsubsection{Time reduction rate}
+
+\paragraph{}
+The ratio of waiting time reduced by the placed resources in the main entrance should be bigger than the time reduction in any of the secondary entrances.
+
+\begin{equation}
+    \sum_{j \in RS}\left({RE_j N_{j,k}}\right) \geq 1 + \sum_{j \in RS}\left({RE_j N_{j,i}}\right) \quad \forall k \in E^m,\ i \in E^s
+\end{equation}
+
+
+
+
+
+\subsubsection{Decision variables must be positive}
+\begin{equation}
+    N_{i,j} \geq 0 \quad \forall i \in RS, \quad j \in E
+\end{equation}
+
+
+
+
+
+
+
+\subsection{Complete LP task}
+
+\begin{gather}
+    max\ z = \sum_{i \in E}\left({\sum_{j \in RS}\left({RE_j N_{i,j}}\right)}\right)  \nonumber\\
+    s.t. \nonumber\\
+    \sum_{i \in E}\left({\sum_{j \in C}\left({C_j N_{j,i}}\right)}\right) \leq 1000 \nonumber\\
+    \sum_{j \in RS}\left({C_j N_{j,k}}\right) \leq 1.1 \times \sum_{j \in RS}\left({C_j N_{j,i}}\right) \quad \forall k \in E^m,\ i \in E^s \nonumber\\
+    \sum_{j \in RS^s} {\left (N_{j,i}\right)} + 1 \leq \sum_{j \in RS^s} {\left (N_{j,k}\right)} \quad \forall k \in E^m,\ i \in E^s \nonumber\\
+    N_{turnstile,north} + 1 \leq N_{turnstile,west} \nonumber\\
+    N_{i,j} \geq 2 \quad \forall i \in RS,\ j \in E^m \nonumber\\
+    N_{i,j} \geq 1 \quad \forall i \in RS,\ j \in E^s \nonumber\\
+    \sum_{j \in RS}\left({RE_j N_{j,k}}\right) \geq 1 + \sum_{j \in RS}\left({RE_j N_{j,i}}\right) \quad \forall k \in E^m,\ i \in E^s \nonumber\\
+    N_{i,j} \geq 0 \quad \forall i \in RS, \quad j \in E \nonumber\\
+\end{gather}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%----------------------------------------- PART 2 --------------------------------------------------
+
+
+
+\section{Part 2: Robots assignment}
+
+\paragraph{}
+This time, the task requires the assignment of a set of robots to a set of galleries. The museum wants to minimize the time that these robots spend introducing the different objects in the galleries to the visitors, while also taking into account the first part of the problem, optimizing in this way the overall time that a visitor spends on the museum (both waiting in the queue and visiting it).
+
+\begin{itemize}
+    \item There are eight robots $R1$ to $R8$ that have different properties (\textit{energy}, \textit{maximum energy} and \textit{presentation time}).
+    \item The museum is divided into seventeen galleries denoted $A$ to $Q$, each one of them has a different amount of items to be presented by the robots.
+    
+\end{itemize}
+
+
+
+
+\subsection{Decision variables definition}
+
+\paragraph{}
+This model has 145 decision variables, since the previous model is included, there are 9 variables that correspond to the first part.
+\paragraph{}
+136 binary variables have been defined to solve the robot assignment problem. The following formula explains the assignment in an explicit way.
+
+
+\begin{equation}
+X_{i,j} =
+\left \{
+      \begin{matrix}
+      \begin{aligned}
+         1& \quad \text{if robot $i$ is assigned to gallery $j$}\\
+         0& \quad \text{otherwise}
+      \end{aligned}
+      \end{matrix}
+   \right .
+   , \quad i \in R, \quad j \in G
+\end{equation}
+
+
+where
+
+\begin{itemize}
+    \item[] R: set of robots
+    \item[] G: set of galleries
+\end{itemize}
+
+
+\subsection{Objective function definition}
+
+\paragraph{}
+This time the objective is to minimize the time needed for the robots to show the different galleries based on the amount of time needed to present an item and the number of items in each one of them.
+\paragraph{}
+Once we reached this part, we realized that the objective function \ref{eq: part 1 - objective function} of part 1 could have been done differently, in this  formula the first part (which solves the previous problem) has been rewritten to include the mean average waiting time and transformed into a minimization formulae.\\
+The second part of the formula is exclusive for solving the assignment problem proposed on this part: for each robot, the time needed to present all items in the gallery is computed (taking into account if the robot is assigned to the gallery or not).
+\paragraph{}
+Therefore, the objective function proposed is:
+\begin{equation}\label{eq: part 2 - objective function}
+    \begin{aligned}
+        \min z = \frac{\sum_{i \in E}{\left( T_i - \sum_{j \in RS}{\left( RE_j N_{j,i} \right)} \right)}}{3} + \sum_{i \in R}{\left( \sum_{ j \in G }{\left( P_i I_j X_{i,j} \right)} \right)}
+    \end{aligned}
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $T$: average waiting time per entrance $i$
+    \item[] $P$: presentation time required by each robot $i$
+    \item[] $I$: number of items per gallery $j$
+\end{itemize}
+
+
+\subsection{Constraints}
+
+\subsubsection{Robots assigned to a gallery}
+
+\paragraph{}
+Every gallery cannot have more than one robot assigned to it and every one of them must have one (in other words, each gallery must have one and only one robot assigned). To model this restriction, it had to be split up into two different constraints to mimic the $equal\ than$ relation.
+
+\begin{equation}
+    \sum_{i \in R}X_{i,j} \leq 1 \quad \forall j \in G
+\end{equation}
+
+\begin{equation}
+    \sum_{i \in R}X_{i,j} \geq 1 \quad \forall j \in G
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $R$: set of robots
+    \item[] $G$: set of galleries
+\end{itemize}
+
+
+\subsubsection{Galleries assigned to a robot}
+
+\paragraph{}
+Each robot should be assigned in at least two galleries, but no more than three. Once again, we split the restriction into two parts.
+
+\begin{equation}
+    \sum_{j \in G}X_{i,j} \geq 2 \quad \forall i \in R
+\end{equation}
+
+\begin{equation}
+    \sum_{j \in G}X_{i,j} \leq 3 \quad \forall i \in R
+\end{equation}
+
+
+
+
+\subsubsection{Robot placement (West)}
+
+\paragraph{}
+There are three robots ($R3$, $R5$ and $R6$)that cannot be assigned into the western galleries, so the sum of those decision variables must be zero.
+
+\begin{equation}
+    \sum_{j \in G^w}X_{i,j} \leq 0 \quad \forall i \in R^e
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $G^w$ = galleries placed in the western part of the building; $G^w \subseteq G$
+    \item[] $R^e$ = robots forbidden in the western part of the building (allowed only on the east); $R^e \subseteq R$
+\end{itemize}
+
+\subsubsection{Robot placement (East)}
+
+\paragraph{}
+There are two robots ($R2$ and $R4$) that cannot be assigned into the east side galleries, so the sum of those decision variables must be zero.
+
+\begin{equation}
+    \sum_{j \in G^e}X_{i,j} \leq 0 \quad \forall i \in R^w
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $G^e$ = galleries placed in the eastern part of the building; $G^e \subseteq G$
+    \item[] $R^w$ = robots forbidden in the east part of the building (allowed only on the west); $R^w \subseteq R$
+\end{itemize}
+
+
+
+
+\subsubsection{Special-robots placement}
+
+\paragraph{}
+If a robot is placed on gallery $A$ and/or gallery $B$, that robot is the only one allowed to be placed on gallery $C$ and/or gallery $B$. \textbf{e.g.} if a robot is placed on $A$, it could be placed in either $C$, $D$ or both, but if a robot is placed on gallery $E$ we cannot assign it to gallery $D$.
+
+\begin{equation}
+    \sum_{j \in G^{A,B}} X_{i,j} \geq \sum_{j \in G^{C,D}} X_{i,j} \quad \forall i \in R
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $G^{A,B}$ = galleries A and B; $G^{A,B} \subseteq G$
+    \item[] $R^{C,D}$ = galleries C and D; $G^{C,D} \subseteq G$
+\end{itemize}
+
+
+
+\subsubsection{Maximum energy}
+
+\paragraph{}
+Each robot has a maximum energy available that cannot be surpassed, it is calculated by multiplying the energy required to present an item by the number of items of the gallery. 
+
+\begin{equation}
+    \sum_{j \in G} X_{i,j} I_j EN_i \leq M_i \quad \forall i \in R
+\end{equation}
+
+where
+
+\begin{itemize}
+    \item[] $EN$ = energy required to present an item by the robot $i$
+    \item[] $M$ = maximum energy allowed for the robot $i$
+\end{itemize}
+
+
+
+
+\subsubsection{Gallery size}
+
+\paragraph{}
+The galleries placed on the West are bigger than the ones in the East, so the presentation time should be 10\% longer than in the latter.
+
+\begin{equation}
+    \sum_{i \in R^w} {X_{i,j} I_j T_i} \geq 1.1 \times \sum_{i \in R^e} {X_{i,j} I_j T_i} \quad \forall i \in G^w
+\end{equation}
+
+
+
+\subsubsection{Decision variables must be 0 or 1 (binary variables)}
+\begin{equation}
+    X_{i,j} \in \{0,1\} \quad \forall i \in R \quad \forall j \in G
+\end{equation}
+
+
+
+
+\subsection{Complete LP task}
+\begin{gather}
+    \min z = \frac{\sum_{i \in E}{\left( T_i - \sum_{j \in RS}{\left( RE_j N_{j,i} \right)} \right)}}{3} + \sum_{i \in R}{\left( \sum_{ j \in G }{\left( P_i I_j X_{i,j} \right)} \right)}\nonumber\\
+    \sum_{i \in R}X_{i,j} \leq 1 \quad \forall j \in G\nonumber\\
+    \sum_{i \in R}X_{i,j} \geq 1 \quad \forall j \in G\nonumber\\
+    \sum_{j \in G}X_{i,j} \geq 2 \quad \forall i \in R\nonumber\\
+    \sum_{j \in G}X_{i,j} \leq 3 \quad \forall i \in R\nonumber\\
+    \sum_{j \in G^w}X_{i,j} \leq 0 \quad \forall i \in R^e\nonumber\\
+    \sum_{j \in G^e}X_{i,j} \leq 0 \quad \forall i \in R^w\nonumber\\
+    \sum_{j \in G^{A,B}} X_{i,j} \geq \sum_{j \in G^{C,D}} X_{i,j} \quad \forall i \in R\nonumber\\
+    \sum_{j \in G} X_{i,j} I_j EN_i \leq M_i \quad \forall i \in R\nonumber\\
+    \sum_{i \in R^w} {X_{i,j} I_j T_i} \geq 1.1 \times \sum_{i \in R^e} {X_{i,j} I_j T_i} \quad \forall i \in G^w\nonumber\\
+    X_{i,j} \in \{0,1\} \quad \forall i \in R \quad \forall j \in G\nonumber\\
+\end{gather}

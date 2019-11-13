@@ -1,0 +1,546 @@
+\chapter{Analysis of results}
+\label{chapter: analysis of results}
+
+\section{Interpretation of decision variables}
+
+\subsection{Part 1}
+
+\paragraph{}
+The values for the decision variables and the result of the objective function obtained after solving the problem with LibreOffice Calc are presented here.
+
+\begin{table}[H]
+    \setlength{\arrayrulewidth}{.1em}
+    \centering
+    \caption{Decision variables values for part 1}
+    \begin{tabular}{cccc}
+        \rowcolor{gray!60}
+        \hline
+        & $RE_1$ & $RE_2$ & $RE_3$\\
+        \hline
+        $E_1$ & 3 & 3 & 2\\
+        $E_2$ & 2 & 2 & 3\\
+        $E_3$ & 1 & 4 & 2\\
+        \hline
+    \end{tabular}
+    \label{table: solution part 1 - decision variables}
+\end{table}
+
+
+\begin{equation}
+    \begin{aligned}
+        z(\vec{N}) & = 67\\
+    \end{aligned}
+    \label{eq: solution part 1 - objective function}
+\end{equation}
+
+\paragraph{}
+The value of the objective function means that the maximum reduction that the museum can perform is 67 minutes. To obtain the minimum waiting time in all queues we still need to perform another operation. Substituting the values obtained in equation \ref{eq: part 1 - average waiting time in all entrances}:
+
+\begin{equation}
+    \begin{aligned}
+        T_{min} & =  \frac{320 - 67}{3} = 84.\overline{3}\ min
+    \end{aligned}
+\end{equation}
+
+\paragraph{}
+Therefore, we can see that the minimum average time in minutes that a person must wait in the queue while satisfying all restrictions is $84.\overline{3}\ min$.
+
+
+\subsection{Part 2}
+\paragraph{}
+This table shows the values obtained in the second part of the assignment, which solve the assignment problem presented by the museum.
+\begin{table}[H]
+    \setlength{\arrayrulewidth}{.1em}
+    \centering
+    \caption{Decision variables values for part 2}
+    \begin{tabular}{cccc|cccccccc}
+        \rowcolor{gray!60}
+        \hline
+        & $RE_1$ & $RE_2$ & $RE_3$ & $R1$ & $R2$ & $R3$ & $R4$ & $R5$ & $R6$ & $R7$ & $R8$\\
+        \hline
+        $E_1$ & 3 & 3 & 2\\
+        $E_2$ & 2 & 2 & 3\\
+        $E_3$ & 1 & 4 & 2 \\
+        \hline
+        $G_1$ & & & & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        $G_2$ & & & & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+        $G_3$ & & & & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+        $G_4$ & & & & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+        $G_5$ & & & & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+        $G_6$ & & & & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+        $G_7$ & & & & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+        $G_8$ & & & & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+        $G_9$ & & & & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+        $G_{10}$ & & & & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+        $G_{11}$ & & & & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+        $G_{12}$ & & & & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+        $G_{13}$ & & & & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+        $G_{14}$ & & & & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+        $G_{15}$ & & & & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+        $G_{16}$ & & & & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+        $G_{17}$ & & & & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+        \hline
+    \end{tabular}
+    \label{table: solution part 2 - decision variables}
+\end{table}
+\begin{align}
+    R1: \{A,C\} \quad R2: \{F,G\} \quad R3: \{N,O\} \quad R4: \{E,I,J\}\nonumber\\
+    R5: \{K,M\} \quad R6: \{L,P\} \quad R7: \{B,D\} \quad R8: \{H,Q\}\nonumber\\
+    \label{eq: solution part 2 - solution set}
+\end{align}
+    
+\begin{equation}
+    z(\vec{X}) = 246.\overline{6}
+    \label{eq: solution part 2 - objective function}
+\end{equation}
+
+\paragraph{}
+The value of the objective function means that the minimum time that a visitor will spend on the museum (including the average waiting time in the queue) is $246.\overline{6} minutes$. This value contains the solution to the previous part ($84.\overline{3}\ min$) but including the time needed by the robots to introduce all items in all galleries of the museum.
+
+The set of galleries assigned to each robot has been included under the table to make the assignments clear to the reader, is the same information included in \ref{table: solution part 2 - decision variables}.
+
+
+\section{Checking the correctness}
+
+\subsection{Part 1}
+
+\paragraph{}
+To check that the solution is correct, the values obtained for the decision variables are used as an input for the constraints of the LP problem as follows:
+
+\paragraph{Cost}
+This restriction involves constraint 1:
+\begin{equation}
+    \begin{pmatrix}
+        N_{RS_1,E_1}\\
+        \vdots\\
+        N_{RS_3,E_1}
+    \end{pmatrix}
+    \begin{pmatrix}
+        32 & 40 & 64
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+        N_{RS_1,E_2}\\
+        \vdots\\
+        N_{RS_3,E_2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        32 & 40 & 64
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+        N_{RS_1,E_3}\\
+        \vdots\\
+        N_{RS_3,E_3}
+    \end{pmatrix}
+    \begin{pmatrix}
+        32 & 40 & 64
+    \end{pmatrix}
+    =
+    1000
+    \leq
+    1000
+\end{equation}
+
+\paragraph{Cost ratio}
+This restriction involves constraints 2 to 3:
+\begin{equation}
+    \begin{pmatrix}
+        N_{RS_1,E_2}\\
+        \vdots\\
+        N_{RS_3,E_2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        32 & 40 & 64
+    \end{pmatrix}
+    \leq
+    1.1 
+    \times
+    \begin{pmatrix}
+        N_{RS_1,E_1} & N_{RS_1,E_3}\\
+        \vdots & \vdots\\
+        N_{RS_3,E_1} & N_{RS_3,E_3}
+    \end{pmatrix}
+    \begin{pmatrix}
+        32 & 40 & 64
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        344\\
+        344
+    \end{pmatrix}
+    \leq
+    \begin{pmatrix}
+        369.6\\
+        352
+    \end{pmatrix}
+\end{equation}
+
+
+\paragraph{Sum of resources}
+This restriction involves constraints 4 to 5:
+\begin{equation}
+    \begin{aligned}
+        \begin{pmatrix}
+            N_{RS_1,E_1}\\
+            N_{RS_2,E_1}
+        \end{pmatrix}
+        +
+        \begin{pmatrix}
+            N_{RS_1,E_3}\\
+            N_{RS_2,E_3}
+        \end{pmatrix}
+        +
+        \begin{pmatrix}
+            1_{2 \times 1}
+        \end{pmatrix}
+        \leq
+        \begin{pmatrix}
+            N_{RS_1,E_2}\\
+            N_{RS_2,E_2}
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            5\\
+            6
+        \end{pmatrix}
+        \leq
+        \begin{pmatrix}
+            6\\
+            6
+        \end{pmatrix}
+    \end{aligned}   
+\end{equation}
+
+\paragraph{Number of turnstiles in secondary entrances}
+This restriction involves constraint 6:
+\begin{equation}
+    N_{RS_2,E_1} + 1 \leq N_{RS_2,E_3} = 3 \leq 3
+\end{equation}
+
+\paragraph{Amount of resources in main entrance}
+This restriction involves constraint 7 to 9:
+\begin{equation}
+    \begin{pmatrix}
+            N_{RS_1,E_2}\\
+            \vdots
+            N_{RS_3,E_2}
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+            2_{3 \times 1}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+            3\\
+            3\\
+            2
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+            2\\
+            2\\
+            2
+    \end{pmatrix}
+\end{equation}
+
+\paragraph{Amount of resources in secondary entrances}
+This restriction involves constraint 10 to 15:
+\begin{equation}
+    \begin{pmatrix}
+            N_{RS_1,E_1} & N_{RS_1,E_3}\\
+            \vdots & \vdots\\
+            N_{RS_3,E_1} & N_{RS_3,E_3}
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+            1_{3 \times 2}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+            2 & 1\\
+            2 & 4\\
+            3 & 2
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+            1 & 1\\
+            1 & 1\\
+            1 & 1
+    \end{pmatrix}
+\end{equation}
+
+\paragraph{Time reduction}
+This restriction involves constraints 16 to 17:
+\begin{equation}
+    \begin{pmatrix}
+        N_{RS_1,E_2}\\
+        \vdots\\
+        N_{RS_3,E_2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        2 & 3 & 4
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+        1_{3 \times 1}
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+        N_{RS_1,E_1} & N_{RS_1,E_3}\\
+        \vdots & \vdots\\
+        N_{RS_3,E_1} & N_{RS_3,E_3}
+    \end{pmatrix}
+    \begin{pmatrix}
+        2 & 3 & 4
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        23\\
+        23
+    \end{pmatrix}
+    \leq
+    \begin{pmatrix}
+        23\\
+        23
+    \end{pmatrix}
+\end{equation}
+
+\paragraph{As shown in the previous demonstrations, all constraints are satisfied so that the solution is correct.}
+
+
+
+
+\subsection{Part 2}
+
+\paragraph{}
+This problem contains the solution and the constraints of the first part, since the values are the same we do not need to perform the demonstrations made before.
+
+\paragraph{}
+Since the remaining part is of binary type, the demonstration can be made almost instantly taking into account the solution set in \ref{eq: solution part 2 - solution set}:
+
+\paragraph{Robots assigned to a gallery}
+This restriction involves constraints 18 to 51. It can be checked by looking at the solution set, no gallery is in two different sets at the same time, meaning that every one of them has one and only one robot assigned.
+
+
+\paragraph{Galleries assigned to a robot}
+This restriction involves constraints 52 to 67. This constraint can be checked at a first glance too, no set has a cardinality bigger than three nor smaller than two.
+
+\paragraph{Robot placement (West)}
+This restriction involves constraints 68 to 70:
+\begin{equation}
+    \begin{pmatrix}
+        X_{R3,G_1} & \cdots & X_{R3,G_{10}}\\
+        X_{R5,G_1} & \cdots & X_{R5,G_{10}}\\
+        X_{R6,G_1} & \cdots & X_{R6,G_{10}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        1_{3 \times 10}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0\\
+        0\\
+        0
+    \end{pmatrix}
+    \leq
+    \begin{pmatrix}
+        0\\
+        0\\
+        0
+    \end{pmatrix}
+\end{equation}
+
+\paragraph{Robot placement (East)}
+This restriction involves constraints 71 to 72:
+\begin{equation}
+    \begin{pmatrix}
+        X_{R2,G_{11}} & \cdots & X_{R3,G_{17}}\\
+        X_{R4,G_{11}} & \cdots & X_{R5,G_{17}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        1_{2 \times 6}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0\\
+        0
+    \end{pmatrix}
+    \leq
+    \begin{pmatrix}
+        0\\
+        0
+    \end{pmatrix}
+\end{equation}
+
+
+
+
+
+\paragraph{Special-robots placement}
+This restriction involves constraints 73 to 80:
+
+\begin{equation}
+    \begin{pmatrix}
+        X_{R1,G_1} & X_{R1,G_2}\\
+        \vdots & \vdots\\
+        X_{R8,G_1} & X_{R8,G_2}\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        1_{8 \times 2}
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+        X_{R1,G_3} & X_{R1,G_4}\\
+        \vdots & \vdots\\
+        X_{R8,G_3} & X_{R8,G_4}\\
+    \end{pmatrix}
+    \begin{pmatrix}
+        1_{8 \times 2}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        1\\
+        0\\
+        0\\
+        0\\
+        0\\
+        1\\
+        0
+    \end{pmatrix}
+    \geq
+    \begin{pmatrix}
+        1\\
+        0\\
+        0\\
+        0\\
+        0\\
+        1\\
+        0
+    \end{pmatrix}
+\end{equation}
+
+\paragraph{Maximum energy}
+This restriction involves constraints 81 to 88:
+
+\begin{equation}
+    \begin{pmatrix}
+        X_{R1,G_1} & \cdots & & X_{R1,G_{17}}\\
+        \vdots & & & \vdots\\
+        X_{R7,G_1} & \cdots & & X_{R1,G_{17}}
+    \end{pmatrix}
+    \begin{pmatrix}
+        5\\
+        5\\
+        5\\
+        6\\
+        6\\
+        4\\
+        4\\
+        4\\
+        7\\
+        7\\
+        3\\
+        3\\
+        3\\
+        2\\
+        2\\
+        2\\
+        2
+    \end{pmatrix}
+    \begin{pmatrix}
+        7 & 5 & 3 & 1 & 2 & 4 & 4 & 5
+    \end{pmatrix}
+    \begin{pmatrix}
+        1_{8 \times 1}
+    \end{pmatrix}
+    \leq
+    \begin{pmatrix}
+        100\\
+        90\\
+        95\\
+        40\\
+        45\\
+        75\\
+        85\\
+        60
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        70\\
+        40\\
+        12\\
+        20\\
+        12\\
+        20\\
+        44\\
+        30
+    \end{pmatrix}
+    \leq
+    \begin{pmatrix}
+        100\\
+        90\\
+        95\\
+        40\\
+        45\\
+        75\\
+        85\\
+        60
+    \end{pmatrix}
+\end{equation}
+
+\paragraph{Gallery size}
+This restriction involves constraints 89 to 98.
+
+Due to the number of constraints, the formalization of the checking has not been included, although the final results are below as proof of correctness.
+\begin{equation}
+    212 \geq 1.1 \times 57 = 212 \geq 62.27
+\end{equation}
+
+\textbf{As shown in the previous demonstrations, all constraints are satisfied so that the solution is, at least, correct (although there is no way to assure that it's the optimal by looking at them).}
+
+\section{Most relevant constraints}
+
+\paragraph{}
+Since the relevance in this case means that the more constraints produced, the more restricted the feasible region becomes, the set of constraints related to cost and time reduction are the most relevant ones. In the second part, the group that yields the most number of constraints is the one related to the robot placement. 
+
+\section{Problem complexity}
+
+\subsection{Part 1}
+
+\paragraph{}
+For this part we defined 9 decision variables and 17 constraints.
+The complexity will increase if we add more entrances or resources to use. This is caused by the additional constraints that would created in the LP task.
+
+The number of decision variables $m \times n$ comes from the $m$ entrances and $n$ resources. The number of constraints will come from $m_s$ secondary entrances and $n$ entrances, the following formula formalizes the number: $3 \times m_s + (m_s \times n) + n + 2$.
+
+\subsection{Part 2}
+
+\paragraph{}
+In this part the number of binary decision variables is 136 and the number of constraints 81. In this case, the problem's complexity increases if we add more galleries or robots, but if we change the amount of items per gallery for example, it will not increase it (since the first problem is embedded in this one, by changing the variables mentioned in part 1 it will also increase its complexity). Once again, this depends on the number of constraints generated by those additions.
+
+\paragraph{}
+The number of decision variables comes from the $m$ entrances, $n$ resources, $o$ galleries and $p$ robots, it is $m \times n + o \times p$. 
+
+
+\section{Specific questions}
+The average waiting time for a visitor depending on the entrance is:
+\begin{itemize}
+    \item[] 78 min for the $north$ entrance
+    \item[] 107 min for the $east$ entrance
+    \item[] 68 min for the $west$ entrance
+\end{itemize}
+
+The time required for a visitor to go through all galleries and all items is 269 min.
+
+The robots in charge of each gallery have already been included in the formula \ref{eq: solution part 2 - solution set}.
+
+
+
+\section{Pros and cons of LibreOffice and GLPK}
+
+\paragraph{}
+The main advantages we found in LibreOffice Calc are the visualization of the computed constraint values (for a fast visual check) and the option to watch the objective function and constraints change in real time, which helps with the understanding of the problem. However, when the problem includes a large constraint set or a high amount of decision variables it can become tedious to model and solve in the spreadsheet. Another minor drawback we found was the slow speed of the program itself while running on macOS, the scrolling seemed laggy and pretty slow.
+
+\paragraph{}
+MathProg/GLPK seems like a more natural way for computer scientists to solve and model LP problems, since the modularity you can achieve allows some interesting approaches by reusing models and changing data files. Although we could not use all GLPK's directives available, the way you can change and scale the problem is pretty huge compared with LibreOffice. Another minor drawback was MathProg's syntax coloring, we did not get our hands on the correct highlighter until the final stages of the coding section. Overall, once you get your mind used to working with sets and summations, there is no real challenge with it, although we would love more verbose syntax errors and more meaningful outputs.  

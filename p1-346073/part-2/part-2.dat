@@ -1,0 +1,97 @@
+data;
+/* begin data  section */
+
+set ENTRANCES := north west east;
+set RESOURCES := vending_machine turnstile employee;
+set SECONDARY_ENTRANCES := north west;
+set SECONDARY_RESOURCES := vending_machine turnstile;
+set MAIN_ENTRANCE := east;
+
+set GALLERIES := A B C D E F G H I J K L M N O P Q;
+set ROBOTS := R1 R2 R3 R4 R5 R6 R7 R8;
+set WEST_GALLERIES := A B C D E F G H I J;
+set EAST_GALLERIES := K L M N O P Q;
+set SPECIAL_GALLERIES_1 := A B;
+set SPECIAL_GALLERIES_2 := C D;
+set EAST_ONLY_ROBOTS := R3 R5 R6;
+set WEST_ONLY_ROBOTS := R2 R4;
+
+/* TODO: put in one set all params related to the resources */
+/* Time reduction in minutes of the available resources */
+param reduction := 
+vending_machine	2
+turnstile		3
+employee		4;
+
+/* Cost of each available resource */
+param cost := 
+vending_machine	4 
+turnstile		5
+employee		8;
+
+/* Cost of each resource per 8h-day */
+param daily_cost :=
+vending_machine	32 
+turnstile		40
+employee		64;
+
+/* Average waiting time per entrance */
+param waiting_time :=
+east	130
+north	100
+west	90;
+
+/* Presentation time in minutes per robot */
+param presentation_time := 
+R1	4
+R2	6
+R3	5
+R4	3
+R5	2
+R6	3
+R7	4
+R8	5;
+
+/* Energy required to present an item */
+param energy_required := 
+R1	7
+R2	5
+R3	3
+R4	1
+R5	2
+R6	4
+R7	4
+R8	5;
+
+/* Max energy available for each robot */
+param max_energy :=
+R1	100
+R2	90
+R3	95
+R4	40
+R5	45
+R6	75
+R7	85
+R8	60;
+
+/* Number of items in each gallery */
+param number_items := 
+A	5
+B	5
+C	5
+D	6
+E	6
+F	4
+G	4
+H	4
+I	7
+J	7
+K	3
+L	3
+M	3
+N	2
+O	2
+P	2
+Q	2;
+
+end;

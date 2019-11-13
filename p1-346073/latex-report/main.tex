@@ -1,0 +1,53 @@
+\documentclass[a4paper,usenames,dvipsnames,table]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage[usenames, dvipsnames]{xcolor}
+\usepackage[top=2cm, margin=2.5cm]{geometry}
+\usepackage{titlepic}
+\usepackage{eurosym}
+
+\graphicspath{{images/}}
+\newcommand{\warning}[2] {
+    \textcolor{red}{(#1) #2}
+}
+\let\texteuro\euro
+
+
+
+
+\begin{document}
+
+\title{
+    {\Huge \textbf{Lab assignment 1: \textit{Modeling Linear Programming Tasks}\\}}
+    {\small Heuristics \& Optimization 2019-2020 (Group 89)}
+}
+\titlepic{\includegraphics[width=0.8\textwidth]{uc3m.jpg}}
+\author{
+    Raul Olmedo Checa ({\normalsize \href{mailto:100346073@alumnos.uc3m.es}{100346073@alumnos.uc3m.es}})\\
+}
+\maketitle
+
+
+
+
+\tableofcontents
+
+
+
+
+\input{chapter1}
+\input{chapter2}
+\input{chapter3}
+\input{chapter4}
+\newpage
+
+\end{document}
