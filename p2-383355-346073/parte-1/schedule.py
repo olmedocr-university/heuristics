@@ -7,14 +7,14 @@ thu = range(12, 14)
 
 first = [0, 4, 8, 12]
 
-NSC = ['NSC1', 'NSC2']
-HSC = ['HSC1', 'HSC2']
-SP = ['SP1', 'SP2']
-MAT = ['MAT1', 'MAT2']
-EN = ['EN1', 'EN2']
-PE = ['PE']
+NSC = 0
+HSC = 1
+SP = 2
+MAT = 3
+EN = 4
+PE = 5
 
-# Mon@1st = 0, ... , Tue@1st = 4, ... , Thu@2nd = 13
+# Mon@1st = 0, Mon@2nd = 1, Mon@3rd = 2, Tue@1st = 4, ... , Thu@2nd = 13
 subjects = {
     'NSC1': [2, 6, 10, 13],
     'NSC2': [2, 6, 10, 13],
@@ -31,12 +31,12 @@ subjects = {
 
 # NSC = 0, HSC = 1, ... , PE = 5
 teachers = {
-    'LUC1': [1],
-    'LUC2': [0, 2, 3, 4],
-    'AND1': [5],
-    'AND2': [0, 2, 3, 4],
-    'JUA1': [0, 2, 3, 4],
-    'JUA2': [0, 2, 3, 4],
+    'LUC1': [0, 1, 2, 3, 4, 5],
+    'LUC2': [0, 1, 2, 3, 4, 5],
+    'AND1': [0, 1, 2, 3, 4, 5],
+    'AND2': [0, 1, 2, 3, 4, 5],
+    'JUA1': [0, 1, 2, 3, 4, 5],
+    'JUA2': [0, 1, 2, 3, 4, 5],
 }
 
 
@@ -57,9 +57,18 @@ def is_not_on_the_same_day(a, b):
         return False
 
 
+def lucia_teaches_hsc(a):
+    return a == PE
+
+
 def juan_can_teach(a):
     if a in mon or a in thu:
         return a not in first
+
+
+def print_solution(solution):
+    # TODO: write the method to beauty print the results
+    print(solution)
 
 
 problem = Problem()
@@ -90,10 +99,14 @@ problem.addConstraint(is_not_on_the_same_day, ('MAT2', 'EN2'))
 # All teachers must lecture different subjects
 problem.addConstraint(AllDifferentConstraint(), [*teachers.keys()])
 
+# FIXME: add function/constraint to take into account that lucia teaches hsc if andrea lectures pe
+problem.addConstraint(lucia_teaches_hsc, (['AND1']))
+problem.addConstraint(lucia_teaches_hsc, (['AND2']))
+
 # Juan won't teach any of the sciences if it is at first hour on mondays or thursdays
+# TODO: rewrite this to avoid calling the function 2 times
 problem.addConstraint(juan_can_teach, (['HSC1']))
 problem.addConstraint(juan_can_teach, (['HSC2']))
-problem.addConstraint(juan_can_teach, (['NSC1']))
-problem.addConstraint(juan_can_teach, (['NSC2']))
 
-print(problem.getSolution())
+print_solution(problem.getSolutions())
+
