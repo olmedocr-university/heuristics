@@ -7,6 +7,13 @@ thu = range(12, 14)
 
 first = [0, 4, 8, 12]
 
+NSC = ['NSC1', 'NSC2']
+HSC = ['HSC1', 'HSC2']
+SP = ['SP1', 'SP2']
+MAT = ['MAT1', 'MAT2']
+EN = ['EN1', 'EN2']
+PE = ['PE']
+
 # Mon@1st = 0, ... , Tue@1st = 4, ... , Thu@2nd = 13
 subjects = {
     'NSC1': [2, 6, 10, 13],
@@ -25,11 +32,11 @@ subjects = {
 # NSC = 0, HSC = 1, ... , PE = 5
 teachers = {
     'LUC1': [1],
-    'LUC2': [0, 1, 2, 3, 4, 5],
+    'LUC2': [0, 2, 3, 4],
     'AND1': [5],
-    'AND2': [0, 1, 2, 3, 4, 5],
-    'JUA1': [0, 1, 2, 3, 4, 5],
-    'JUA2': [0, 1, 2, 3, 4, 5],
+    'AND2': [0, 2, 3, 4],
+    'JUA1': [0, 2, 3, 4],
+    'JUA2': [0, 2, 3, 4],
 }
 
 
@@ -50,8 +57,9 @@ def is_not_on_the_same_day(a, b):
         return False
 
 
-def is_not_at_first_hour(a):
-    return a not in first
+def juan_can_teach(a):
+    if a in mon or a in thu:
+        return a not in first
 
 
 problem = Problem()
@@ -82,6 +90,10 @@ problem.addConstraint(is_not_on_the_same_day, ('MAT2', 'EN2'))
 # All teachers must lecture different subjects
 problem.addConstraint(AllDifferentConstraint(), [*teachers.keys()])
 
-# problem.addConstraint(is_not_at_first_hour, )
+# Juan won't teach any of the sciences if it is at first hour on mondays or thursdays
+problem.addConstraint(juan_can_teach, (['HSC1']))
+problem.addConstraint(juan_can_teach, (['HSC2']))
+problem.addConstraint(juan_can_teach, (['NSC1']))
+problem.addConstraint(juan_can_teach, (['NSC2']))
 
 print(problem.getSolution())
