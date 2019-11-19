@@ -1,4 +1,4 @@
-from constraint import *
+import constraint
 
 mon = range(0, 3)
 tue = range(4, 7)
@@ -44,17 +44,15 @@ def is_consecutive(a, b):
     return a + 1 == b or a == b + 1
 
 
-def is_not_on_the_same_day(a, b):
-    if a in mon:
-        return b not in mon
-    elif a in tue:
-        return b not in tue
-    elif a in wed:
-        return b not in wed
-    elif a in thu:
-        return b not in thu
-    else:
-        return False
+def is_not_on_the_same_day(a,b,c,d,e,f):
+    days=[mon,tue,wed,thu]
+    for i in [a,b]:
+        for j in days:
+            if i in j:
+                for k in [c,d,e,f]:
+                    if k in j:
+                        return False
+    return True
 
 
 def lucia_teaches_hsc(a,b,c,d):
@@ -67,19 +65,25 @@ def lucia_teaches_hsc(a,b,c,d):
     return (loop1 and loop2) or (not (loop1 and loop2))
 
 
-def juan_can_teach(*args):
-    for i in args:
-        if (i in mon or i in thu) and i in first:
-            return False
+def juan_can_teach(a,b,c,d,e,f):
+    for i in [a,b]:
+        if i == NSC or i == HSC:
+            for k in [c,d,e,f]:
+                if (k in mon or k in thu) and k in first:
+                    return False
     return True
 
 
 def print_solution(solution):
     # TODO: write the method to beauty print the results
-    print(solution)
+    print("Number of solutions found: {}\n".format(len(solution)))
+#   .getSolutions() returns a dictionary
+#   for s in solutions:
+#       print("NSC = {},{}; HSC = {},{}; SP = {},{}; MAT = {},{}; EN = {},{}; PE = {}; LUCIA = {},{}; ANDREA = {},{}; JUAN = {},{};"
+#       .format(s['NSC1'], s['NSC2'], s['HSC1'], s['HSC2'], s['SP1'], s['SP2'], s['MAT1'], s['MAT2'], s['EN1'], s['EN2'], s['PE'], s['LUC1'], s['LUC2'], s['AND1'], s['AND2'], s['JUA1'], s['JUA2']))
 
 
-problem = Problem()
+problem = constraint.Problem()
 
 for key, value in subjects.items():
     problem.addVariable(key, value)
@@ -88,31 +92,23 @@ for key, value in teachers.items():
     problem.addVariable(key, value)
 
 # All subjects must be in different time slots
-problem.addConstraint(AllDifferentConstraint(), [*subjects.keys()])
+problem.addConstraint(constraint.AllDifferentConstraint(), [*subjects.keys()])
 
 # Human & social science class must be consecutive
 problem.addConstraint(is_consecutive, ('HSC1', 'HSC2'))
 
 # MAT-NSC & MAT-EN cannot be taught on the same day
 # TODO: rewrite this to include lists instead of manually performing the cartesian product
-problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'NSC1'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'NSC2'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT2', 'NSC1'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT2', 'NSC2'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'EN1'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'EN2'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT2', 'EN1'))
-problem.addConstraint(is_not_on_the_same_day, ('MAT2', 'EN2'))
+problem.addConstraint(is_not_on_the_same_day, ('MAT1','MAT2','NSC1','NSC2','EN1','EN2'))
 
 # All teachers must lecture different subjects
-problem.addConstraint(AllDifferentConstraint(), [*teachers.keys()])
+problem.addConstraint(constraint.AllDifferentConstraint(), [*teachers.keys()])
 
 # FIXME: add function/constraint to take into account that lucia teaches hsc if andrea lectures pe
 problem.addConstraint(lucia_teaches_hsc, ('LUC1','LUC2','AND1','AND2'))
 
 # Juan won't teach any of the sciences if it is at first hour on mondays or thursdays
 # TODO: rewrite this to avoid calling the function 2 times
-problem.addConstraint(juan_can_teach, ('NSC1','NSC2','HSC1','HSC2'))
+problem.addConstraint(juan_can_teach, ('JUA1','JUA2','NSC1','NSC2','HSC1','HSC2'))
 
 print_solution(problem.getSolutions())
-
