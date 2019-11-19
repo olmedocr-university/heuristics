@@ -57,7 +57,6 @@ def is_not_on_the_same_day(a, b, c, d, e, f):
 
 def lucia_teaches_hsc(a, b, c, d):
     loop1 = False
-    debug = [c, d]
     for i in [c, d]:
         loop1 = loop1 or i == PE
     loop2 = False
@@ -76,11 +75,10 @@ def juan_can_teach(a, b, c, d, e, f):
 
 
 def print_solution(solution):
-    # TODO: write the method to beauty print the results
-
     print("Number of solutions found: {}\n".format(len(solution)))
 
     print("Checking the validity of the solutions...")
+    
     number_of_errors_in_constraint_7 = 0
     number_of_errors_in_constraint_8 = 0
     for item in solution:
