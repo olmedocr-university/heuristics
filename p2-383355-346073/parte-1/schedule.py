@@ -44,8 +44,12 @@ def is_consecutive(a, b):
     return a + 1 == b or a == b + 1
 
 
-def is_not_duplicated(a, b, c, d, e, f, g, h, i, j):
+def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j):
     return a < b and c < d and e < f and g < h and i < j
+
+
+def no_duplicated_teachers(a, b, c, d, e, f):
+    return a < b and c < d and e < f
 
 
 def is_not_on_the_same_day(a, b, c, d, e, f):
@@ -79,16 +83,10 @@ def juan_can_teach(a, b, c, d, e, f):
 
 
 def print_solution(solution):
-    # TODO: write the method to beauty print the results
-
     print("Number of solutions found: {}\n".format(len(solution)))
 
-    print(solution[0])
-    print(solution[15000])
-    print(solution[30000])
-    print(solution[52000])
-
     print("Checking the validity of the solutions...")
+
     number_of_errors_in_constraint_7 = 0
     number_of_errors_in_constraint_8 = 0
     for item in solution:
@@ -140,7 +138,9 @@ for key, value in teachers.items():
 problem.addConstraint(constraint.AllDifferentConstraint(), [*subjects.keys()])
 
 # Avoid duplication of solutions
-problem.addConstraint(is_not_duplicated, ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2'))
+problem.addConstraint(no_duplicated_subjects,
+                      ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2'))
+problem.addConstraint(no_duplicated_teachers, ('AND1', 'AND2', 'JUA1', 'JUA2', 'LUC1', 'LUC2'))
 
 # Human & social science class must be consecutive
 problem.addConstraint(is_consecutive, ('HSC1', 'HSC2'))
