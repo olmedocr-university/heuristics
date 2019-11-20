@@ -44,6 +44,10 @@ def is_consecutive(a, b):
     return a + 1 == b or a == b + 1
 
 
+def is_not_duplicated(a, b, c, d, e, f, g, h, i, j):
+    return a < b and c < d and e < f and g < h and i < j
+
+
 def is_not_on_the_same_day(a, b, c, d, e, f):
     days = [mon, tue, wed, thu]
     for i in [a, b]:
@@ -75,20 +79,26 @@ def juan_can_teach(a, b, c, d, e, f):
 
 
 def print_solution(solution):
+    # TODO: write the method to beauty print the results
+
     print("Number of solutions found: {}\n".format(len(solution)))
 
+    print(solution[0])
+    print(solution[15000])
+    print(solution[30000])
+    print(solution[52000])
+
     print("Checking the validity of the solutions...")
-    
     number_of_errors_in_constraint_7 = 0
     number_of_errors_in_constraint_8 = 0
     for item in solution:
+        valid_pe_case = item['AND1'] == PE or item['AND2'] == PE
+
         valid_nsc_case = (item['HSC1'] in first or item['HSC2'] in first) and (
                 (item['HSC1'] in mon or item['HSC2'] in mon) or (item['HSC1'] in thu or item['HSC2'] in thu))
 
         valid_hsc_case = (item['NSC1'] in first or item['NSC2'] in first) and (
                 (item['NSC1'] in mon or item['NSC2'] in mon) or (item['NSC1'] in thu or item['NSC2'] in thu))
-
-        valid_pe_case = item['AND1'] == PE or item['AND2'] == PE
 
         if valid_pe_case:
             invalid_item = item['LUC1'] != HSC and item['LUC2'] != HSC
@@ -128,6 +138,9 @@ for key, value in teachers.items():
 
 # All subjects must be in different time slots
 problem.addConstraint(constraint.AllDifferentConstraint(), [*subjects.keys()])
+
+# Avoid duplication of solutions
+problem.addConstraint(is_not_duplicated, ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2'))
 
 # Human & social science class must be consecutive
 problem.addConstraint(is_consecutive, ('HSC1', 'HSC2'))
