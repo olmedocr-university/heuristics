@@ -7,6 +7,7 @@ thu = range(12, 14)
 
 days = [mon, tue, wed, thu]
 
+# List with all the first slots from each day
 first = [0, 4, 8, 12]
 
 NSC = 0
@@ -43,10 +44,26 @@ teachers = {
 
 
 def is_consecutive(a, b):
+    """Check if the time slots are consecutive
+
+        Keyword arguments:
+        a -- time slot for the first subject
+        b -- time slot for the second subject
+    """
     return b == a + 1 or a == b + 1
 
 
 def is_not_on_the_same_day(a, b, c, d, e, f):
+    """Check that no Natural Science or English class is on the same day as Math
+
+        Keyword arguments:
+        a -- time slot for any of the Math hours
+        b -- time slot for the other Math class
+        c -- time slot for any of the Natural Science classes
+        d -- time slot for the other Natural Science class
+        e -- time slot for any of the English classes
+        f -- time slot for the other English class
+    """
     is_a_valid_instance = True
 
     for day in days:
@@ -65,22 +82,47 @@ def no_duplicated_teachers(a, b, c, d, e, f):
 
 
 def lucia_teaches_hsc(a, b, c, d):
+    """Check that Lucia teaches Human Sciences if Andrea is assigned Physical Education
+
+        Keyword arguments:
+        a -- any of the subjects assigned to Lucia
+        b -- the other subject assigned to Lucia
+        c -- any of the subjects assigned to Lucia
+        d -- the other subject assigned to Lucia
+    """
     if a == HSC or b == HSC:
         return c == PE or d == PE
     return True
 
 
 def juan_can_teach(a, b, c, d):
+    """Check that Juan is able to teach HSC or NSC based on the constraints in the document
+
+        Keyword arguments:
+        a -- any of the subjects assigned to Juan
+        b -- the other subject assigned to Juan
+        c -- time slot for any of the Human Sciences class
+        d -- time slot for the other Human Sciences class
+    """
     if c in first and (c in mon or c in thu) or d in first and (d in mon or d in thu):
         return a != HSC and b != HSC
     return True
 
 
 def print_solution(solution):
+    """Pretty-print the dictionary with the solution that python-constraint returns
+
+         Keyword arguments:
+         solution -- dictionary containing all the variables of the problem with its instanciated value
+     """
+    # Sort the solution dict by value and store it in a list
     sorted_solution = sorted(solution.items(), key=lambda kv: kv[1])
+    # Copy by value the sorted list
     subjects_solution = sorted_solution[:]
     teachers_solution = []
 
+    # For each item in the sorted solution, delete the keys containing any teacher assignment and populate the list 
+    # regarding teachers 
     for slot in sorted_solution:
         slot_key = slot[0]
         slot_value = slot[1]
@@ -89,6 +131,7 @@ def print_solution(solution):
             teachers_solution.append((slot_key, slot_value))
             subjects_solution.remove(slot)
 
+    # Format the solution into a table to visualize it better 
     print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("", "Mon", "Tue", "Wed", "Thu"))
     print("-" * 50)
     print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("9-10",
@@ -119,6 +162,7 @@ def print_solution(solution):
 
 problem = constraint.Problem()
 
+# Insert all elements of both dictionaries with its corresponding domains
 for key, value in subjects.items():
     problem.addVariable(key, value)
 
@@ -149,4 +193,5 @@ problem.addConstraint(lucia_teaches_hsc, ('LUC1', 'LUC2', 'AND1', 'AND2'))
 # Since NSC is forced in an earlier constraint to be at the last hour we don't need to check it
 problem.addConstraint(juan_can_teach, ('JUA1', 'JUA2', 'HSC1', 'HSC2'))
 
-print_solution(problem.getSolution())
+# print_solution(problem.getSolution())
+print(len(problem.getSolutions()))
