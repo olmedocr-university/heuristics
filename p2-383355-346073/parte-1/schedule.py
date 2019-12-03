@@ -5,6 +5,8 @@ tue = range(4, 7)
 wed = range(8, 11)
 thu = range(12, 14)
 
+days = [mon, tue, wed, thu]
+
 first = [0, 4, 8, 12]
 
 NSC = 0
@@ -41,7 +43,17 @@ teachers = {
 
 
 def is_consecutive(a, b):
-    return a + 1 == b or a == b + 1
+    return b == a + 1 or a == b + 1
+
+
+def is_not_on_the_same_day(a, b, c, d, e, f):
+    is_a_valid_instance = True
+
+    for day in days:
+        if a in day or b in day:
+            is_a_valid_instance = is_a_valid_instance and c not in day and d not in day and e not in day and f not in day
+
+    return is_a_valid_instance
 
 
 def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j):
@@ -52,78 +64,57 @@ def no_duplicated_teachers(a, b, c, d, e, f):
     return a < b and c < d and e < f
 
 
-def is_not_on_the_same_day(a, b, c, d, e, f):
-    days = [mon, tue, wed, thu]
-    for i in [a, b]:
-        for j in days:
-            if i in j:
-                for k in [c, d, e, f]:
-                    if k in j:
-                        return False
+def lucia_teaches_hsc(a, b, c, d):
+    if a == HSC or b == HSC:
+        return c == PE or d == PE
     return True
 
 
-def lucia_teaches_hsc(a, b, c, d):
-    loop1 = False
-    for i in [c, d]:
-        loop1 = loop1 or i == PE
-    loop2 = False
-    for i in [a, b]:
-        loop2 = loop2 or i == HSC
-    return (loop1 and loop2) or (not loop1 and not loop2)
-
-
-def juan_can_teach(a, b, c, d, e, f):
-    for i in [a, b]:
-        if i == NSC or i == HSC:
-            for k in [c, d, e, f]:
-                if (k in mon or k in thu) and k in first:
-                    return False
+def juan_can_teach(a, b, c, d):
+    if c in first and (c in mon or c in thu) or d in first and (d in mon or d in thu):
+        return a != HSC and b != HSC
     return True
 
 
 def print_solution(solution):
-    print("Number of solutions found: {}\n".format(len(solution)))
+    sorted_solution = sorted(solution.items(), key=lambda kv: kv[1])
+    subjects_solution = sorted_solution[:]
+    teachers_solution = []
 
-    print("Checking the validity of the solutions...")
+    for slot in sorted_solution:
+        slot_key = slot[0]
+        slot_value = slot[1]
 
-    number_of_errors_in_constraint_7 = 0
-    number_of_errors_in_constraint_8 = 0
-    for item in solution:
-        valid_pe_case = item['AND1'] == PE or item['AND2'] == PE
+        if slot_key in teachers.keys():
+            teachers_solution.append((slot_key, slot_value))
+            subjects_solution.remove(slot)
 
-        valid_nsc_case = (item['HSC1'] in first or item['HSC2'] in first) and (
-                (item['HSC1'] in mon or item['HSC2'] in mon) or (item['HSC1'] in thu or item['HSC2'] in thu))
+    print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("", "Mon", "Tue", "Wed", "Thu"))
+    print("-" * 50)
+    print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("9-10",
+                                                         subjects_solution[0][0],
+                                                         subjects_solution[3][0],
+                                                         subjects_solution[6][0],
+                                                         subjects_solution[9][0]))
 
-        valid_hsc_case = (item['NSC1'] in first or item['NSC2'] in first) and (
-                (item['NSC1'] in mon or item['NSC2'] in mon) or (item['NSC1'] in thu or item['NSC2'] in thu))
+    print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("10-11",
+                                                         subjects_solution[1][0],
+                                                         subjects_solution[4][0],
+                                                         subjects_solution[7][0],
+                                                         subjects_solution[10][0]))
 
-        if valid_pe_case:
-            invalid_item = item['LUC1'] != HSC and item['LUC2'] != HSC
-            if invalid_item:
-                number_of_errors_in_constraint_7 += 1
-                print("Error in 7th constraint")
-                print(item, '\n')
+    print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s} \n".format("11-12",
+                                                            subjects_solution[2][0],
+                                                            subjects_solution[5][0],
+                                                            subjects_solution[8][0],
+                                                            ""))
 
-        if valid_nsc_case:
-            invalid_item = item['JUA1'] == NSC or item['JUA2'] == NSC
-            if invalid_item:
-                number_of_errors_in_constraint_8 += 1
-                print("Error in 8th constraint, NSC part")
-                print(item, '\n')
-
-        if valid_hsc_case:
-            invalid_item = item['JUA1'] == HSC or item['JUA2'] == HSC
-            if invalid_item:
-                number_of_errors_in_constraint_8 += 1
-                print("Error in 8th constraint, HSC part")
-                print(item, '\n')
-
-    if number_of_errors_in_constraint_7 + number_of_errors_in_constraint_8 != 0:
-        print("No errors found")
-    else:
-        print("Found {} errors regarding constraint 7 and {} from constraint 8".format(number_of_errors_in_constraint_7,
-                                                                                       number_of_errors_in_constraint_8))
+    print("NSC: {}, HSC: {}, SP: {},  MAT: {},  EN: {},  PE: {}".format(teachers_solution[0][0],
+                                                                        teachers_solution[1][0],
+                                                                        teachers_solution[2][0],
+                                                                        teachers_solution[3][0],
+                                                                        teachers_solution[4][0],
+                                                                        teachers_solution[5][0]))
 
 
 problem = constraint.Problem()
@@ -134,13 +125,13 @@ for key, value in subjects.items():
 for key, value in teachers.items():
     problem.addVariable(key, value)
 
-# All subjects must be in different time slots
-problem.addConstraint(constraint.AllDifferentConstraint(), [*subjects.keys()])
-
 # Avoid duplication of solutions
 problem.addConstraint(no_duplicated_subjects,
                       ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2'))
 problem.addConstraint(no_duplicated_teachers, ('AND1', 'AND2', 'JUA1', 'JUA2', 'LUC1', 'LUC2'))
+
+# All subjects must be in different time slots
+problem.addConstraint(constraint.AllDifferentConstraint(), [*subjects.keys()])
 
 # Human & social science class must be consecutive
 problem.addConstraint(is_consecutive, ('HSC1', 'HSC2'))
@@ -151,9 +142,11 @@ problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'MAT2', 'NSC1', 'NSC2', '
 # All teachers must lecture different subjects
 problem.addConstraint(constraint.AllDifferentConstraint(), [*teachers.keys()])
 
+# LUC will lecture HSC provided that AND takes care of PE
 problem.addConstraint(lucia_teaches_hsc, ('LUC1', 'LUC2', 'AND1', 'AND2'))
 
-# Juan won't teach any of the sciences if it is at first hour on mondays or thursdays
-problem.addConstraint(juan_can_teach, ('JUA1', 'JUA2', 'NSC1', 'NSC2', 'HSC1', 'HSC2'))
+# JUA won't teach HSC nor NSC if it is at first hour on mon or thu
+# Since NSC is forced in an earlier constraint to be at the last hour we don't need to check it
+problem.addConstraint(juan_can_teach, ('JUA1', 'JUA2', 'HSC1', 'HSC2'))
 
-print_solution(problem.getSolutions())
+print_solution(problem.getSolution())
