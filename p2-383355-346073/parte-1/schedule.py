@@ -113,7 +113,7 @@ def print_solution(solution):
     """Pretty-print the dictionary with the solution that python-constraint returns
 
          Keyword arguments:
-         solution -- dictionary containing all the variables of the problem with its instanciated value
+         solution -- dictionary containing all the variables of the problem with its instantiated value
      """
     # Sort the solution dict by value and store it in a list
     sorted_solution = sorted(solution.items(), key=lambda kv: kv[1])
@@ -121,8 +121,8 @@ def print_solution(solution):
     subjects_solution = sorted_solution[:]
     teachers_solution = []
 
-    # For each item in the sorted solution, delete the keys containing any teacher assignment and populate the list 
-    # regarding teachers 
+    # For each item in the sorted solution, delete the keys containing any teacher assignment and populate the list
+    # regarding teachers
     for slot in sorted_solution:
         slot_key = slot[0]
         slot_value = slot[1]
@@ -131,7 +131,7 @@ def print_solution(solution):
             teachers_solution.append((slot_key, slot_value))
             subjects_solution.remove(slot)
 
-    # Format the solution into a table to visualize it better 
+    # Format the solution into a table to visualize it better
     print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("", "Mon", "Tue", "Wed", "Thu"))
     print("-" * 50)
     print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s}".format("9-10",
@@ -162,7 +162,7 @@ def print_solution(solution):
 
 problem = constraint.Problem()
 
-# Insert all elements of both dictionaries with its corresponding domains
+# Insert all elements of both dictionaries with its corresponding domains into the python constraint problem
 for key, value in subjects.items():
     problem.addVariable(key, value)
 
@@ -193,5 +193,5 @@ problem.addConstraint(lucia_teaches_hsc, ('LUC1', 'LUC2', 'AND1', 'AND2'))
 # Since NSC is forced in an earlier constraint to be at the last hour we don't need to check it
 problem.addConstraint(juan_can_teach, ('JUA1', 'JUA2', 'HSC1', 'HSC2'))
 
-# print_solution(problem.getSolution())
-print(len(problem.getSolutions()))
+print_solution(problem.getSolution())
+# print(len(problem.getSolutions()))
