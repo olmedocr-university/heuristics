@@ -50,7 +50,7 @@ public:
 	//List of students on the bus
 	vector<string> students;
 	//Pointer to the parent node
-	state* parent;
+	state* parent = NULL;
 	state(node buspos, int capacity, int g, string initPos, vector<node> nodeList, vector<vector<vector<string>>> studentsInNodes, vector<string> students) {
 		this->buspos = buspos;
 		this->capacity = capacity;
@@ -72,6 +72,22 @@ public:
 		this->capacity = i;
 		this->g = 0;
 		this->parent = NULL;
+	}
+	void printState() {
+		cout << "Buspos: " << this->buspos.name << " Capacity: " << this->capacity << " g: " << this->g << " InitPos: " << this->initPos << endl;
+		if (this->students.size() > 0) {
+			for (int i = 0; i < (int)this->students.size(); i++) {
+				cout << students[i] << " ";
+			}
+		} else {
+			cout << "empty";
+		}
+		cout << endl << "Adjacencies: " << endl;
+		for (int i = 0; i < (int)this->buspos.adjacent.size(); i++) {
+			cout << this->buspos.adjacent[i].type << " " << this->buspos.adjacent[i].schoolName << " " << this->buspos.adjacent[i].name << " " << this->buspos.cost[i];
+			cout << endl;
+		}
+		cout << endl;
 	}
 };
 //Find a node's position in the node list based on name
@@ -131,6 +147,7 @@ vector<state> successors(state s) {
 				}
 				//Remove the student from the bus
 				newState.students.erase(newState.students.begin() + i);
+				newState.parent = &s;
 				//Add new state to the output vector
 				out.push_back(newState);
 			}
@@ -173,6 +190,7 @@ vector<state> successors(state s) {
 				} else {
 					newState.studentsInNodes[nodePos(newState.buspos.name, newState.nodeList)].erase(newState.studentsInNodes[nodePos(newState.buspos.name, newState.nodeList)].begin() + i);
 				}
+				newState.parent = &s;
 				//Add new state to the output vector
 				out.push_back(newState);
 			}
@@ -181,7 +199,8 @@ vector<state> successors(state s) {
 	//move
 	for (int i = 0; i < (int)s.buspos.adjacent.size();i++) {
 		//Create a state for each adjacent node. The g variable is updated with the cost to move to said node
-		state newState = state(s.buspos.adjacent[i], s.capacity, s.g + s.buspos.cost[i], s.initPos, s.nodeList, s.studentsInNodes, s.students);
+		state newState = state(s.nodeList[nodePos(s.buspos.adjacent[i].name, s.nodeList)], s.capacity, s.g + s.buspos.cost[i], s.initPos, s.nodeList, s.studentsInNodes, s.students);
+		newState.parent = &s;
 		out.push_back(newState);
 	}
 	return out;
@@ -232,6 +251,10 @@ bool equalStates(state s1,state s2) {
 		}
 	}
 	return true;
+}
+
+int h(state s) {
+	return 0;
 }
 
 //Function to interpret input file and create the initial state
@@ -343,6 +366,17 @@ state parseFile(string file) {
 			//The nodes only have the default type, the name and the default schoolname in this step
 			nodeList.push_back(node("stop", nodes[i], ""));
 		}
+		//Add the schools and schoolnames to the nodes
+		for (int i = 0; i < (int)schools.size(); i++) {
+			for (int k = 0; k < (int)nodeList.size(); k++) {
+				if (schools[i][1] == nodeList[k].name) {
+					nodeList[k].type = "school";
+					nodeList[k].schoolName = schools[i][0];
+					break;
+				}
+			}
+		}
+
 		//Add the cost and adjacencies to the nodes
 		for (int i = 0; i < (int)nodeList.size(); i++) {
 			vector<int> costv;
@@ -358,16 +392,6 @@ state parseFile(string file) {
 			nodeList[i].cost = costv;
 			nodeList[i].adjacent = adjacent;
 		}
-		//Add the schools and schoolnames to the nodes
-		for (int i = 0; i < (int)schools.size(); i++) {
-			for (int k = 0; k < (int)nodeList.size(); k++) {
-				if (schools[i][1] == nodeList[k].name) {
-					nodeList[k].type = "school";
-					nodeList[k].schoolName = schools[i][0];
-					break;
-				}
-			}
-		}
 		//Obtain the initial buspos for creating the state
 		int initPosi = 0;
 		for (int i = 0; i < (int)nodeList.size(); i++) {
@@ -376,8 +400,9 @@ state parseFile(string file) {
 				break;
 			}
 		}
+		state s = state(nodeList[initPosi], capacity, 0, initPos, nodeList);
 		//Create the state. The students vector is empty and the studentsInNodes vector must be added later
-		state s = state(nodeList[initPosi],capacity,0,initPos,nodeList);
+		
 		//Create a studentsInNodes vector and fill it with as many empty vectors as nodes are
 		vector<vector<vector<string>>> studInNodes;
 		for (int i = 0; i < (int)nodeList.size(); i++) {
@@ -404,19 +429,31 @@ state parseFile(string file) {
 	input.close();
 }
 
+void sortedDescInsert(vector<state> open, vector<state> desc) {
+	for (int i = 0; i < (int)desc.size(); i++) {
+		for (int k = 0; k < (int)open.size(); k++) {
+			//Find the first smaller or equal value
+			if (h(open[k]) + open[k].g >= h(desc[i]) + desc[i].g) {
+				//Insert the descendent
+				open.insert(open.begin() + k, desc[i]);
+				break;
+				//If all values are smaller, insert at the end
+			} else if (k == (int)open.size() - 1) {
+				open.push_back(desc[i]);
+			}
+		}
+	}
+}
+
 int main(int argc, char* argv[]) {
 	state init = parseFile(argv[1]);
 	//Check if the file exists
 	if (init.capacity < 0) {
 		return -1;
 	}
-	cout << "Buspos: " << init.buspos.name << " Capacity: " << init.capacity << " g: " << init.g << " InitPos: " << init.initPos << endl << "Adjacencies: " << endl;
-	for (int i = 0; i < (int)init.nodeList.size(); i++) {
-		cout << init.nodeList[i].type << " " << init.nodeList[i].schoolName << " " << init.nodeList[i].name << ": ";
-		for (int k = 0; k < (int)init.nodeList[i].adjacent.size(); k++) {
-			cout << init.nodeList[i].adjacent[k].name << " " << init.nodeList[i].cost[k] << ", ";
-		}
-		cout << endl;
+	vector<state> openList{init};
+	vector<state> closedList;
+	while (openList.size() > 0) {
+
 	}
-	cout << endl;
 }
