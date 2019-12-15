@@ -1,10 +1,11 @@
 import constraint
+from timeit import default_timer as timer
 
 # Each day is defined by the range denoted below, note the one-number-gap between days
 monday = range(0, 3)
 tuesday = range(4, 7)
 wednesday = range(8, 11)
-thursday = range(12, 14)
+thursday = range(12, 15)
 
 # List containing the ranges of every day of the week
 days = [monday, tuesday, wednesday, thursday]
@@ -14,7 +15,7 @@ all_hours = list(monday) + list(tuesday) + list(wednesday) + list(thursday)
 
 # Lists with the first hour and last hour of each day
 first_hours = [0, 4, 8, 12]
-last_hours = [2, 6, 10, 13]
+last_hours = [2, 6, 10, 14]
 
 # Assign a number to each subject
 NSC = 0
@@ -28,7 +29,7 @@ PE = 5
 all_subjects = [NSC, HSC, SP, MAT, EN, PE]
 
 # Dictionary with all the variables regarding subjects and its corresponding domains
-# Mon@1st = 0, Mon@2nd = 1, Mon@3rd = 2, Tue@1st = 4, ... , Thu@2nd = 13
+# Mon@1st = 0, Mon@2nd = 1, Mon@3rd = 2, Tue@1st = 4, ... , Thu@3rd = 14
 subjects = {
     'NSC1': last_hours,
     'NSC2': last_hours,
@@ -40,7 +41,8 @@ subjects = {
     'MAT2': first_hours,
     'EN1': all_hours,
     'EN2': all_hours,
-    'PE': all_hours
+    'PE1': all_hours,
+    'PE2': all_hours
 }
 
 # Dictionary with all the variables regarding teaches and its domains
@@ -84,7 +86,7 @@ def is_not_on_the_same_day(a, b, c, d, e, f):
     return is_a_valid_instance
 
 
-def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j):
+def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j, k, l):
     """
     Avoid the duplication of solutions for interchangeable positions like MAT1-MAT2 (the two hours of the same subject)
     by forcing the first hour (XXX1) to be before the second one (XXX2), where XXX denote the name of the subject.
@@ -99,14 +101,16 @@ def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j):
     :param h: second hour of MAT class (MAT2)
     :param i: first hour of EN class (EN1)
     :param j: second hour of EN class (EN2)
+    :param k: first hour of PE class (PE1)
+    :param l: second hour of PE class (PE2)
     """
-    return a < b and c < d and e < f and g < h and i < j
+    return a < b and c < d and e < f and g < h and i < j and k < l
 
 
 def no_duplicated_teachers(a, b, c, d, e, f):
     """
     Avoid duplicating solutions with the same subject assignment but different order (analogous of
-    no_duplicated_subjects() but for teachers).
+    no_duplicated_subjects() but for teachers.
 
     :param a: first subject for AND
     :param b: second subject for AND
@@ -152,9 +156,9 @@ def print_solution(solution):
 
     :param solution: dictionary containing all the variables of the problem with its instantiated value
     """
-    # Sort the solution from python-constraint by value and store it in a list
+    # Sort the solution dict by value and store it in a list
     sorted_solution = sorted(solution.items(), key=lambda kv: kv[1])
-    # Copy by value the sorted list and create an empty one to store the teachers solutions only
+    # Copy by value the sorted list
     subjects_solution = sorted_solution[:]
     teachers_solution = []
 
@@ -183,10 +187,11 @@ def print_solution(solution):
                                                          subjects_solution[7][0],
                                                          subjects_solution[10][0]))
 
-    print("{:6s} {:^10s} {:^10s} {:^10s} \n".format("11-12",
-                                                    subjects_solution[2][0],
-                                                    subjects_solution[5][0],
-                                                    subjects_solution[8][0]))
+    print("{:6s} {:^10s} {:^10s} {:^10s} {:^10s} \n".format("11-12",
+                                                            subjects_solution[2][0],
+                                                            subjects_solution[5][0],
+                                                            subjects_solution[8][0],
+                                                            subjects_solution[11][0]))
 
     print("NSC: {}, HSC: {}, SP: {},  MAT: {},  EN: {},  PE: {}".format(teachers_solution[0][0],
                                                                         teachers_solution[1][0],
@@ -207,7 +212,7 @@ for key, value in teachers.items():
 
 # Avoid duplication of solutions
 problem.addConstraint(no_duplicated_subjects,
-                      ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2'))
+                      ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2', 'PE1', 'PE2'))
 problem.addConstraint(no_duplicated_teachers, ('AND1', 'AND2', 'JUA1', 'JUA2', 'LUC1', 'LUC2'))
 
 # All subjects must be in different time slots
@@ -229,4 +234,8 @@ problem.addConstraint(lucia_teaches_hsc, ('LUC1', 'LUC2', 'AND1', 'AND2'))
 # Since NSC is forced in an earlier constraint to be at the last hour we don't need to check it
 problem.addConstraint(juan_can_teach, ('JUA1', 'JUA2', 'HSC1', 'HSC2'))
 
+start = timer()
+print(len(problem.getSolutions()))
+end = timer()
 print_solution(problem.getSolution())
+print("Time elapsed: {}".format(end - start))

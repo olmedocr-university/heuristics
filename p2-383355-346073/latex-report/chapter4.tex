@@ -1,0 +1,12 @@
+\chapter{Conclusions}
+\label{chapter: conclusions}
+
+\paragraph{}
+For the first part, although it was quite straightforward and took us almost no time to get our first solutions, we struggle to get the whole idea of the lab assignment, at first we though that it was focused on obtaining the minimum set of solutions with no repetition whatsoever, with that goal in mind we tried to reduce the time used to compute the solutions and the number of different combinations for the assignment, that is why we included some new constraints in our modelling and implementation.\\
+We ended up refreshing our python knowledge and how to use the python-constraint library to perform this type of CSP assignment problems with no hassle.
+
+\paragraph{}
+With the second part we went through more problems than desired, particularly in the model implementation using C++ language.\\
+At the beginning our program was poorly optimized and took a long time to compute the solution even by using small problems, so we had to change how the program worked to get better results. After some time we realized that the problem was related with the compiler embedded in VSCode, we switched to g++ with the optimization flags enabled and the problem ran with no problems.\\
+We had some troubles too with the scope of pointers, we did not realize that some references were being destroyed, creating some nasty memory problems and cyclic references that took some time to debug and fix.\\
+When the time to implement an heuristic came, we had no idea how to focus the development, it would have been nice to have this explained more thoroughly during classes, in order to reach this part of the assignment with more theory and examples than what we had at that point. Our main problem was the admissibility of the heuristic, since we always ended up overestimating the cost of the optimal solution (and the popular distance-based heuristics did not work well under this problem characterisitics).  

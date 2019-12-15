@@ -1,10 +1,11 @@
 import constraint
+from timeit import default_timer as timer
 
 # Each day is defined by the range denoted below, note the one-number-gap between days
 monday = range(0, 3)
 tuesday = range(4, 7)
 wednesday = range(8, 11)
-thursday = range(12, 14)
+thursday = range(12, 15)
 
 # List containing the ranges of every day of the week
 days = [monday, tuesday, wednesday, thursday]
@@ -40,6 +41,7 @@ subjects = {
     'MAT2': first_hours,
     'EN1': all_hours,
     'EN2': all_hours,
+    'EN3': all_hours,
     'PE': all_hours
 }
 
@@ -64,7 +66,7 @@ def is_consecutive(a, b):
     return b == a + 1 or a == b + 1
 
 
-def is_not_on_the_same_day(a, b, c, d, e, f):
+def is_not_on_the_same_day(a, b, c, d, e, f, g):
     """
     Check that no Natural Science or English class is on the same day as Math.
 
@@ -74,17 +76,35 @@ def is_not_on_the_same_day(a, b, c, d, e, f):
     :param d: time slot for the other Natural Science class
     :param e: time slot for any of the English classes
     :param f: time slot for the other English class
+    :param g: time slot for the third English class
     """
     is_a_valid_instance = True
 
     for day in days:
         if a in day or b in day:
-            is_a_valid_instance = is_a_valid_instance and c not in day and d not in day and e not in day and f not in day
+            is_a_valid_instance = is_a_valid_instance and c not in day and d not in day and e not in day and f not in day and g not in day
 
     return is_a_valid_instance
 
 
-def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j):
+def en_is_not_on_the_same_day(a, b, c):
+    """
+    New added constrain to avoid both hours of EN to be on the same day
+
+    :param a: first hour of EN class (PE1)
+    :param b: second hour of EN class (PE2)
+    :param c: second hour of EN class (PE2)
+    """
+    is_a_valid_instance = True
+
+    for day in days:
+        if a in day:
+            is_a_valid_instance = is_a_valid_instance and b not in day and c not in day
+
+    return is_a_valid_instance
+
+
+def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j, k):
     """
     Avoid the duplication of solutions for interchangeable positions like MAT1-MAT2 (the two hours of the same subject)
     by forcing the first hour (XXX1) to be before the second one (XXX2), where XXX denote the name of the subject.
@@ -99,8 +119,9 @@ def no_duplicated_subjects(a, b, c, d, e, f, g, h, i, j):
     :param h: second hour of MAT class (MAT2)
     :param i: first hour of EN class (EN1)
     :param j: second hour of EN class (EN2)
+    :param j: third hour of EN class (EN3)
     """
-    return a < b and c < d and e < f and g < h and i < j
+    return a < b and c < d and e < f and g < h and i < j < k
 
 
 def no_duplicated_teachers(a, b, c, d, e, f):
@@ -207,7 +228,7 @@ for key, value in teachers.items():
 
 # Avoid duplication of solutions
 problem.addConstraint(no_duplicated_subjects,
-                      ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2'))
+                      ('NSC1', 'NSC2', 'HSC1', 'HSC2', 'SP1', 'SP2', 'MAT1', 'MAT2', 'EN1', 'EN2', 'EN3'))
 problem.addConstraint(no_duplicated_teachers, ('AND1', 'AND2', 'JUA1', 'JUA2', 'LUC1', 'LUC2'))
 
 # All subjects must be in different time slots
@@ -217,7 +238,10 @@ problem.addConstraint(constraint.AllDifferentConstraint(), [*subjects.keys()])
 problem.addConstraint(is_consecutive, ('HSC1', 'HSC2'))
 
 # MAT-NSC & MAT-EN cannot be taught on the same day
-problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'MAT2', 'NSC1', 'NSC2', 'EN1', 'EN2'))
+problem.addConstraint(is_not_on_the_same_day, ('MAT1', 'MAT2', 'NSC1', 'NSC2', 'EN1', 'EN2', 'EN3'))
+
+# English classes can't be on the same day
+problem.addConstraint(en_is_not_on_the_same_day, ('EN1', 'EN2', 'EN3'))
 
 # All teachers must lecture different subjects
 problem.addConstraint(constraint.AllDifferentConstraint(), [*teachers.keys()])
@@ -229,4 +253,8 @@ problem.addConstraint(lucia_teaches_hsc, ('LUC1', 'LUC2', 'AND1', 'AND2'))
 # Since NSC is forced in an earlier constraint to be at the last hour we don't need to check it
 problem.addConstraint(juan_can_teach, ('JUA1', 'JUA2', 'HSC1', 'HSC2'))
 
+start = timer()
+print(len(problem.getSolutions()))
+end = timer()
 print_solution(problem.getSolution())
+print("Time elapsed: {}".format(end - start))

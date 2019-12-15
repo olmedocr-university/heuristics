@@ -1,0 +1,238 @@
+\chapter{Problem Modelling}
+\label{chapter: problem modelling}
+
+%----------------------------------------- PART 1 --------------------------------------------------
+
+\section{Part 1: Time-tabling}
+
+\paragraph{}
+The school has contacted us to schedule the classes for a certain course, the information they provide consists on the available time slots, subjects and teachers, also indicating the different constraints that must hold, complicating the manual assignment.
+
+\begin{itemize}
+    \item The subjects are distributed among the week from $Monday$ to $Thursday$ and from \textbf{9-10} to \textbf{11-12} (3 hours each day) except $Thursdays$, where the classes end at \textbf{11}.\\
+    In order to denote this slots, we used a subset of $\mathbb{N}$ in the following way:\\
+    
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            & \textbf{Mon} & \textbf{Tue} & \textbf{Wed} & \textbf{Thu} \\ \hline
+            9:00 - 10:00  & 0            & 4            & 8            & 12           \\ \hline
+            10:00 - 11:00 & 1            & 5            & 9            & 13           \\ \hline
+            11:00 - 12:00 & 2            & 6            & 10           &              \\ \hline
+        \end{tabular}
+        \caption{Schedule}
+        \label{tb: part 1: schedule}
+    \end{table}
+    
+    The gap between days is intended to mark the change between days (simplifying later the checking of consecutive classes).
+    
+    \item The variables are denoted by \textit{NSC}, \textit{HSC}, \textit{SP}, \textit{MAT}, \textit{EN}, \textit{PE}, which correspond to the six subjects that the school teaches in that course. To allow us to specify the number of hours per week that each subject has, a number is added at the end of the names above stated (e.g. \textit{HSC} is decomposed into \textit{HSC1} and \textit{HSC2}) except \textit{PE}, that is the only subject taught once during the week.
+    
+    \item Finally, the three teachers are denoted as \textit{AND}, \textit{LUC} and \textit{JUA}, since each one of them must teach two subjects, we append a number after these names (e.g. \textit{LUC} will be decomposed into \textit{LUC1} and \textit{LUC2}).\\
+    
+    The domain of the variables regarding teachers is denoted with numbers that are related to the subjects in the school, therefore:
+    
+\begin{equation}
+    NSC = 0,\ HSC = 1,\ SP = 2,\ MAT = 3,\ EN = 4,\ PE = 5.
+\end{equation}
+    
+    
+    
+    
+    
+\end{itemize}
+
+\subsection{Variables}
+Below there is the definition in mathematical notation of the variable set for the constraint network:
+
+\begin{multline}\label{eq: part 1 - variables}
+    X = \{ NSC1, NSC2, HSC1, HSC2, SP1, SP2, MAT1, MAT2, EN1, EN2, PE,\\ ,LUC1, LUC2, AND1, AND2, JUA1, JUA2 \}
+\end{multline}
+
+\subsection{Domain}
+Initially, the domain is the following:
+
+\begin{gather}\label{eq: part 1 - domain}
+    D_i = \{ 0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13 \}, \quad \forall i \in X \setminus \{ AND1, AND2, LUC1, LUC2, JUA1, JUA2 \}\\
+    D_i = \{ 0, 1, 2, 3, 4, 5 \}, \quad \forall i \in \{ AND1, AND2, LUC1, LUC2, JUA1, JUA2 \}
+\end{gather}
+
+\paragraph{}
+ After reading the constraints of the problem, we can delete all values of the domain in which the \textit{NSC} subject is not on the first hour of the day, resulting in: $D_{NSC1} = D_{NSC2} = \{2, 6, 10, 13\}$ . The same happens with the domain regarding \textit{MAT}, $D_{MAT1} = D_{MAT2} = \{0, 4, 8, 12\}$, since the problem forces it to be at first hour. Therefore, our final domain for this variables is:
+ 
+\begin{gather}\label{eq: part 1 - reduced domain}
+    D_{NSC1} = D_{NSC2} = \{ 2, 6, 10, 13 \}\\
+    D_{MAT1} = D_{MAT2} = \{ 0, 4, 8, 12 \}
+\end{gather}
+
+\subsection{Restrictions}
+The following restrictions are presented in the document:
+
+\begin{itemize}
+    \item Each lecture lasts one hour, and only one subject can be lectured.\\
+    The first part of this constraint is fulfilled during the domain selection phase, we denoted each one of the possible slots with a natural number, enforcing in this way a 1-hour class in each slot.\\
+    For the second part:
+    
+    \begin{equation}
+    \label{eq: part 1 - all different slots}
+        i \neq j, \quad \forall i \in X,\ j \in X \setminus \{ i \}
+    \end{equation}
+    
+    \item All subjects should be lectured two hours every week, but Physical Education, that should be assigned only one hour.\\
+    This constraint is modeled during the variable selection phase, we chose two different values for each subject, denoting the number of hours per week that they must be taught.
+    
+    \item The two hours devoted to each subject can be lectured consecutively or not (or even on different days), but Social and Human Sciences that should be lectured in two consecutive hours.
+    
+    \begin{equation}
+        NSC1 + 1 = \ NSC2 \enspace \lor \enspace NSC2 + 1 = NSC1
+    \end{equation}
+    
+    \item Mathematics should not be lectured the same day than Natural Sciences or English.
+    
+    \begin{equation}
+    \label{eq: part 1 - no english/natural science classes with maths }
+        MAT1 \lor  MAT2 \in i \implies NSC1, NSC2, EN1, EN2 \not \in i,\quad  \forall i \in days
+    \end{equation}
+    
+    where 
+    
+   \begin{itemize}
+       \item[] days: set denoting the domain values grouped by day as denoted in \ref{tb: part 1: schedule}
+   \end{itemize}
+    
+    \item In addition, Mathematics should be lectured first in the morning, and Natural Sciences should be last (note that we took the second hour on Thursday as last for that day).
+    
+    \begin{gather}
+        MAT1, MAT2 = \{ 0, 4, 8, 12 \}\\
+        NSC1, NSC2 = \{ 2, 6, 10, 13 \}
+    \end{gather}
+    
+    \item Each teacher should lecture two different subjects, that should be different than those of her/his colleagues.
+    
+    \begin{equation}
+        AND1 \neq AND2 \neq LUC1 \neq LUC2 \neq JUA1 \neq JUA2
+    \end{equation}
+    
+    \item Lucia will lecture Social and Human Sciences provided that Andrea takes care of Physical Education.
+    
+    \begin{equation}
+        AND1 \lor AND2 = 5 \implies LUC1 \lor LUC2 = 1
+    \end{equation}
+    
+    \item Juan wants to lecture neither Natural Sciences nor Social and Human Sciences, if any of these are allocated first in the morning either on Monday or Thursday.\\
+    Since in \ref{eq: part 1 - reduced domain} we reduced the domain for NSC, it is not required to include \textit{NSC1} nor \textit{NSC2} in the constraint below, since \textit{JUA} will always be able to teach it.
+    
+    \begin{equation}
+        HSC1 \lor HSC2 = \{ 0, 12 \} \implies JUAN1, JUAN2 \neq 0
+    \end{equation}
+    
+    \item Although this was not requested, we chose to add another constraint to avoid the duplicated solutions that are included in the model chosen. All tuples of variables (e.g. \textit{MAT1} and \textit{MAT2}) containing the slot assignment are forced to be instantiated in ascending order (\textit{MAT1} is always before \textit{MAT2} and therefore its value will be always lower, according to our design).
+    
+    \begin{equation}
+    \label{eq: part 1 - no subject duplication}
+        i > j, \quad \forall (i, j) \in S
+    \end{equation}
+    
+    where
+    
+    \begin{itemize}
+        \item[] \textit{S}: set with the tuples containing all variables related to a subject. 
+    \end{itemize}
+    
+    \item Analogous to what we did on the previous constraint, we force teachers to get the subject assignment in ascending order to avoid the repetition of solutions.
+    
+    \begin{equation}
+        i > j, \quad \forall (i, j) \in T
+    \end{equation}
+    
+    where
+    
+    \begin{itemize}
+        \item[] \textit{T}: set with the tuples containing the subject assignment for each teacher. 
+    \end{itemize}
+    
+\end{itemize}
+
+
+
+\section{Part 2: Heuristic Search}
+
+\subsection{Design Of The States}
+\paragraph{}
+The states in this problem must represent the position of the bus and the children, while also containing as information the layout of the graph. For the second part, an auxiliary object has been created called node. Nodes contain the following information:
+
+\begin{itemize}
+    \item[] \textit{type}: This stores if the node is a school or not
+    \item[] \textit{name}: The name of the node, such as P1 in the example 
+    \item[] \textit{schoolName}: The name of the school, it is left empty for stops 
+    \item[] \textit{adjacent}: This stores the index of the nodes adjacent to this one 
+    \item[] \textit{cost}: This stores the cost of moving to the adjacent nodes
+\end{itemize}
+
+\paragraph{}
+States themselves follow this structure:
+
+\begin{itemize}
+    \item[] \textit{buspos}: Index of the node the bus is currently at
+    \item[] \textit{capacity}: The number of students the bus can hold
+    \item[] \textit{g}: The cumulative cost up to this state
+    \item[] \textit{initPos}: The index of the initial position of the bus
+    \item[] \textit{nodeList}: The list of nodes of the graph, containing node objects (a pointer to the list for programming purposes)
+    \item[] \textit{studentsInNodes}: The representation of where each student is within the graph. Nodes were decided to be immutable, so it has been moved to the state. It follows this organization: ( ((1,C1),(2,C2)), (), ((2,C3)) ), where empty slots are left for all nodes to simplify access and storage. CX is the school the student belongs to and the number is how many students from that school are within the node
+    \item[] \textit{students}: The list of students currently within the bus
+    \item[] \textit{parent}: A pointer to the parent state for retracing the solution
+\end{itemize}
+
+\subsection{Operators}
+\paragraph{}
+The operators take a state and return all possible children it can have. In this problem, the only possible operations are to move to an adjacent node, to pick up a student or to drop off a student. Only operating on one student at a time was considered, since otherwise optimality may not be guaranteed.
+
+\paragraph{}
+Moving students simply looks at the nodes adjacent to the buspos and creates new states for each one of them.
+
+\paragraph{}
+Picking up a student looks at the students within the current node in studentsInNodes only if the node is a stop or a school with a non-matching student, removes one of them and adds them to the students of the state. If the value in studentsInNodes reaches 0, the value-student pair is removed.
+
+\paragraph{}
+Dropping off a student checks if the node is a school, looks at the students within “students” in the state, picks one of them, checks if the student and school match and if so, removes them from students and adds them to studentsInNodes.
+
+\subsection{Heuristic Functions}
+\paragraph{}
+We didn't manage to implement an admissible heuristic function for this problem, nonetheless this are the approaches we took:
+
+\begin{itemize}
+    \item We tried to force the bus to pick up students by adding the minimum cost between the students and its corresponding school, for that task we used the Floyd-Warshall algorithm to obtain the costs between two nodes, with the final value of the heuristic function being the sum of the costs between each student and the school, however this is inadmissible because the bus can pick up more than one student at the same time.\\
+    We also tried to count students with the same destination as one group, but even doing so it remained inadmissible, since the path that the bus takes is shorter than going directly between student and school for every student. Presumably this heuristic would be admissible with the bus capacity equaling to one.
+    \item Another approach we tried was to relax the adjacency of the nodes, we assumed that students were able to reach its corresponding school with a unitary cost, but this provided almost no information and it was not strictly admissible (e.g. five students within one unit of cost from their school), when we tested it the result obtained was different from the one in the uninformed search and the cost was higher.
+\end{itemize}
+
+\subsection{Initial State}
+\paragraph{}
+This state is provided within the input file, parsed and transformed into the initial state that is inserted into open.
+
+\subsection{Final State}
+\paragraph{}
+Checking if a state is the goal in this problem is fairly simple, all that must be checked is that buspos is initPos, that students is empty, that all stops in studentsInNodes are empty and that all students at a school match with said school.
+
+\subsection{A* Algorithm}
+\paragraph{}
+This is pseudocode for the A* implementation used in this lab. It’s a fairly standard implementation which checks if the successor already exists within open or closed with a lower f=h+g and ignores it if so. It is important for open to be a sorted list based on f.
+
+\begin{itemize}
+    \item[] Add initial state to open
+    \item[] While open is not ready
+    \item[] \quad Pop the first state from open
+    \item[] \quad If it is a goal, halt and obtain solution path
+    \item[] \quad Otherwise, generate its successors
+    \item[] \quad Add the current state at the end of closed
+    \item[] \quad For each successor
+    \item[] \quad \quad If it exists in open with lower f, continue
+    \item[] \quad \quad If it exists in closed with lower f, continue
+    \item[] \quad \quad Otherwise, insert it into open in its correct position based on f
+    \item[] \quad \quad Also, set its parent to the current state
+    \item[] If a solution was not found, report on it
+\end{itemize}
+
+\paragraph{}
+Looking through open and closed to find repeat states and inserting successors in order is what takes most time, as it requires iterating through lists that rapidly expand as the problem becomes harder. Attempts were made to optimize this but since open must be ordered based on f and closed can’t be ordered or else the pointers break, no search other than iterating through them was possible.

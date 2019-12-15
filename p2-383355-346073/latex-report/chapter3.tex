@@ -1,0 +1,47 @@
+\chapter{Analysis of results}
+\label{chapter: analysis of results}
+
+
+\section{Part 1: Time-tabling}
+\paragraph{}
+We performed several tests to see how the program performs by varying domain, variables and constraints and an additional one to check for incorrect assignments and as a baseline for comparing the number of solutions and execution time:
+
+\begin{itemize}
+    \item[] \textit{schedule.py}: main program containing just one solution for the problem modeled.
+    
+    \item[] \textit{schedule-test-1.py}: taking into account the base program, we added one more lecture hour to the timetable and one more weekly hour to the subject Physical Education to test how many possibilities are added to the solution.
+    
+    \item[] \textit{schedule-test-2.py}: we added to the previous program another constraint regarding the two variables (PE1 and PE2) that forces those two hours to be on different days.
+    
+    \item[] \textit{schedule-test-3.py}: similar to what we did with schedule-1, we added one more hour and another English class to the timetable.
+    
+    \item[] \textit{schedule-test-4.py}: following the previous approach, we added one more constraint regarding English classes to avoid having them on the same day.
+    
+    \item[] \textit{schedule-base.py}: this program computes all solutions for the timetabling problem with the constraints required in the assignment, it also checks for any inconsistency in those solutions and measures the execution time.
+    
+\end{itemize}
+
+\paragraph{}
+Regarding tests number 1 (35208 $solutions$) and 3 (10368 $solutions$), the same number of variables with the same domain were added, although the number of solutions varies significantly due to the constraints affecting those variables:\\
+In the first case we duplicated the variable storing Physical Education classes, which is only affected by the constraints \ref{eq: part 1 - all different slots} and \ref{eq: part 1 - no subject duplication}, whereas the second case adds another English class, which is restricted by the same constraints plus \ref{eq: part 1 - no english/natural science classes with maths }, since the former is less restricted, the number of solutions is bigger than the latter, as can be seen at the beginning of this paragraph.
+
+\paragraph{}
+In tests number 2 and 4 we checked the same principle as above, we added the same new constraint in both problems, forcing Physical Education in \textit{schedule-test-1} and English classes in \textit{schedule-test-3} to be on different days. As we expected, the variable restricted by the most constraints obtained the less solutions (5184) compared with the one regarding PE classes (14832), even though initially both had the same domain.
+
+\section{Part 2: Heuristic Search}
+\paragraph{}
+We performed several test to check the validity of our implementation, we included four of them into the solution of this problem.
+
+\begin{itemize}
+    \item[] \textit{no-solution-test.prob}: we designed the problem to have no solutions in order to check that our program was able to explore all possible states and stop based on the fact that no solution was reached but all nodes were visited.
+    
+    \item[] \textit{test-1.prob}: this was the example provided in the problem statement and we used while we were developing the program.
+    
+    \item[] \textit{test-2.prob}: reduced problem with huge differences in the costs to ease the manual computation of our solution.
+    
+    \item[] \textit{test-3.prob}: small variation from the previous test by deleting just one node and changing the capacity of the bus to make the solution path longer and check its correctness.
+    
+    \item[] \textit{test-4.prob}: we used ten nodes and twelve students from three schools distributed among the stops, this test was intended to be a benchmark to get the point in which the program becomes slow by the number of expansions computed, however the solution was found in 3s.
+    
+    \item[] \textit{test-5.prob}: this test was exactly the same as the previous one, but we added two new students placed in the stop number nine, as result instead of spending three seconds obtaining the solution, it took more than three minutes to get the solution path.
+\end{itemize}
